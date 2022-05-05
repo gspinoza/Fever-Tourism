@@ -1,5 +1,5 @@
 import './App.css'
-import React from "react"
+import React, { useState } from "react"
 import Header from "./Components/Header/Header"
 import SearchBar from './Components/SearchBar/SearchBar'
 import ListFilter from "./Components/ListFilter/ListFilter"
@@ -9,13 +9,19 @@ import Planner from "./Components/Planner/Planner"
 
 
 function App () {
+  const [value, setValue] = useState('')
+
+  function getSearchValue (searchValue) {
+    setValue(searchValue)
+  }
+
   return (
     <div className="App">
       <Header />
-      <SearchBar />
+      <SearchBar getSearchValue={getSearchValue} />
       <ListFilter />
-      <Result />
-      <Map />
+      <Result SearchResult={value} />
+      <Map SearchResult={value} />
     </div>
   )
 }
