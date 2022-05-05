@@ -1,8 +1,7 @@
 import React from 'react'
 import './Planner.css'
 import { List } from 'antd'
-
-
+import { useState, useEffect } from 'react'
 
 
 const plan = [
@@ -29,10 +28,29 @@ const plan = [
 ]
 
 
+
+
 function Planner () {
+
+  const [data, setData] = useState([])
+
+  /* !!! Used for test !!!
+  useEffect(() => {
+    function data1 (radius) {
+      var requestOptions = { method: 'GET', redirect: 'follow' }
+      fetch("http://localhost:4000/nyc/places/" + radius + "/3", requestOptions)
+        .then(response => response.json())
+        .then(result => setData(result)) // return
+        .catch(error => console.log('error', error))
+    }
+    data1(1000)
+    console.log(data)
+  }, [])
+  */
+
   return (
-    <div class="Planner">
-      Planner
+    <div className="Planner">
+
       <List
         size="large"
         bordered
@@ -43,6 +61,7 @@ function Planner () {
             <div>{item.address}</div>
             <div>{item.openhour}</div></List.Item>}
       />
+
     </div>
   )
 }

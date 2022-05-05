@@ -1,0 +1,10 @@
+.ListFilter {
+  width: 18%;
+  font-size: 20px;
+  float: left;
+  margin: 0.5%;
+  margin-left: 1%;
+}
+.list-all {
+  float: right;
+}

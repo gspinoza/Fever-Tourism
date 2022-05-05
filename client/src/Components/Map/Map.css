@@ -1,5 +1,5 @@
 .Map {
-  width: 55%;
+  width: 57%;
   height: 100%;
   font-size: 50px;
   float: left;
@@ -21,4 +21,22 @@
   margin: 2px;
   border-radius: 4px;
   font-size: small;
+}
+
+.marker {
+  background-image: url('../../../public/marker.png');
+  background-size: cover;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.mapboxgl-popup {
+  max-width: 200px;
+}
+
+.mapboxgl-popup-content {
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
 }
