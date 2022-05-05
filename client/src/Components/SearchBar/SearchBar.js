@@ -2,19 +2,22 @@
 import React, { useState } from 'react'
 import './SearchBar.css'
 import { Input } from 'antd'
+import { getInstance } from 'antd/lib/notification'
 
 
 const { Search } = Input
 
-const onSearch = value => console.log(value)
+export var string
 
-function search (e) {
-  console.log(e.target.value)
-}
+function SearchBar (props) {
+  const { getSearchValue } = props
 
-
-function SearchBar () {
   const [searchValue, setSearchValue] = useState()
+
+  function search (e) {
+    getSearchValue(searchValue)
+  }
+
   return (
     <div className='SearchBar'>
       <Search
@@ -23,8 +26,8 @@ function SearchBar () {
         enterButton="Search"
         size="large"
         value={searchValue}
-        onChange={search}
-        onSearch={onSearch}
+        onChange={(e) => setSearchValue(e.target.value)}
+        onSearch={search}
       />
     </div>
   )
