@@ -47,14 +47,14 @@ router.get('/geo/:place', (req, res) => {
         .catch(error => console.log('error', error))
 })
 
-// get place details
 router.get('/nyc/places/:radius/:limit', (req, res) => {
-    // make external request
-    var requestOptions = { method: 'GET', redirect: 'follow' }
-    fetch(`http://api.opentripmap.com/0.1/en/places/radius?apikey=${api_key}&radius=${req.params.radius}&limit=${req.params.limit}&offset=10&lon=-74.0059&lat=40.71427`, requestOptions)
-        .then(response => response.json())
-        .then(data => res.end(cleanData(data))) // return
-        .catch(error => console.log('error', error))
-})
+  // make external request
+  var requestOptions = {method: 'GET',redirect: 'follow'};
+  fetch(`http://api.opentripmap.com/0.1/en/places/radius?apikey=${api_key}&radius=${req.params.radius}&limit=${req.params.limit}&kinds=natural,historic,cultural&rate=3&offset=10&lon=-74.0059&lat=40.71427`, requestOptions)
+    .then(response => response.json())
+    .then(data => res.end(cleanData(data))) // return
+    .catch(error => console.log('error', error));
+});
 
-module.exports = router
+module.exports = router;
+
