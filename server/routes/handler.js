@@ -39,16 +39,22 @@ function cleanPlaceDetails(data) {
 
   // data to return
   let newPlaceObject = {};
+  newPlaceObject.id = opentripmapdata['xid'];
+  newPlaceObject.name = opentripmapdata['name'];
   house_number = opentripmapdata['address']['house_number'];
   road = opentripmapdata['address']['road'];
   suburb = opentripmapdata['address']['suburb'];
   city = opentripmapdata['address']['city'];
   postcode = opentripmapdata['address']['postcode'];
   newPlaceObject.address = `${house_number} ${road}, ${suburb}, ${city} ${postcode}`;
+  newPlaceObject.rate = opentripmapdata['rate'];
+  newPlaceObject.kinds = opentripmapdata['kinds'];
   newPlaceObject.url = opentripmapdata['url'];
   newPlaceObject.wikipedia_url = opentripmapdata['wikipedia'];
   newPlaceObject.image = opentripmapdata['image'];
   newPlaceObject.wiki_info = opentripmapdata['wikipedia_extracts']['text'];
+  newPlaceObject.lon = opentripmapdata['point']['lon'];
+  newPlaceObject.lat = opentripmapdata['point']['lat'];
   // console.log(newPlaceObject);
   return JSON.stringify(newPlaceObject)
 }
