@@ -15,7 +15,7 @@ function Map (props) {
   const [lat, setLat] = useState(40.71427) // defalt lat of New York
   const [zoom, setZoom] = useState(12)
   //const [data, setData] = useState([])
-  const { SearchResult, SearchRadius } = props
+  const { passData } = props
 
   //console.log(SearchRadius)
 
@@ -38,6 +38,7 @@ function Map (props) {
       .addTo(map.current)
   }
 
+
   useEffect(() => {
     if (!map.current) {// initialize map only once
       map.current = new mapboxgl.Map({
@@ -56,7 +57,7 @@ function Map (props) {
       })
     }
   })
-
+  /*
   // add marker on map
   useEffect(() => {
     // get the place detail
@@ -136,7 +137,29 @@ function Map (props) {
     }
 
   }, [SearchResult, SearchRadius])
+  */
 
+  useEffect(() => {
+    if (map.current) {
+      // initialize map again
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [lng, lat],
+        zoom: zoom
+      })
+
+      // set lng, lat, and zoom as the map moving
+      map.current.on('move', () => {
+        setLng(map.current.getCenter().lng.toFixed(4))
+        setLat(map.current.getCenter().lat.toFixed(4))
+        setZoom(map.current.getZoom().toFixed(2))
+      })
+    }
+    for (let i = 0; i < passData.length; i++) {
+      addMarker(passData[i])
+    }
+  }, [passData])
 
   return (
     <div className="Map">
