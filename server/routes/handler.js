@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 // to fetch external data
 const fetch = require('node-fetch')
+const axios = require("axios");
 var api_key = '5ae2e3f221c38a28845f05b60136f3be8a3b4fe024bc8cc4a3956574'
 var api_key_zip = 'b450db216156525dfaa2f39d77acaa27'
 
@@ -104,6 +105,15 @@ router.get('/nyc/places/:radius/:limit/:lon/:lat', (req, res) => {
     .catch(error => console.log('error', error));
 });
 
+// Axios: get places given lon, lat, radius, & limit
+router.get('/axios/nyc/places/:radius/:limit/:lon/:lat', (req, res) => {
+  // make external request
+  axios(`http://api.opentripmap.com/0.1/en/places/radius?apikey=${api_key}&radius=${req.params.radius}&limit=${req.params.limit}&kinds=natural,historic,cultural&rate=3&offset=10&lon=${req.params.lon}&lat=${req.params.lat}`)
+    .then(response => response.data)
+    .then(data => res.end(cleanData(data))) // return
+    .catch(error => console.log("Failed to fetch page: ", error));
+});
+
 // get place info
 router.get('/nyc/place/details/:placeid', (req, res) => {
   // make external request
@@ -112,6 +122,15 @@ router.get('/nyc/place/details/:placeid', (req, res) => {
     .then(response => response.json())
     .then(data => res.end(cleanPlaceDetails(data))) // return
     .catch(error => console.log('error', error));
+});
+
+// Axios: get place details using
+router.get('/axios/nyc/place/details/:placeid', (req, res) => {
+  // make external request
+  axios(`http://api.opentripmap.com/0.1/en/places/xid/${req.params.placeid}?apikey=${api_key}`)
+    .then(response => response.data)
+    .then(data => res.end(cleanPlaceDetails(data))) // return
+    .catch(error => console.log("Failed to fetch page: ", error));
 });
 
 // get lon and lat given zipcode
