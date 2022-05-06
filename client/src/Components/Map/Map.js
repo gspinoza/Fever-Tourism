@@ -62,7 +62,7 @@ function Map (props) {
     // get the place detail
     function dataInit () {
       var requestOptions = { method: 'GET', redirect: 'follow' }
-      fetch("http://localhost:4000/nyc/places/" + SearchRadius + "/50000", requestOptions)
+      fetch("http://localhost:4000/nyc/places/" + SearchRadius + "/1000/" + lng + "/" + lat, requestOptions)
         .then(response => response.json())
         .then(result => {
           //console.log(1)
@@ -77,7 +77,7 @@ function Map (props) {
     // Get the search result
     function dataSearch () {
       var requestOptions = { method: 'GET', redirect: 'follow' }
-      fetch("http://localhost:4000/nyc/places/" + SearchRadius + "/1000", requestOptions)
+      fetch("http://localhost:4000/nyc/places/" + SearchRadius + "/1000/" + lng + "/" + lat, requestOptions)
         .then(response => response.json())
         .then(result => {
           //console.log(SearchRadius)
