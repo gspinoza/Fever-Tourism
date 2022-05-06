@@ -8,3 +8,9 @@
 .list-all {
   float: right;
 }
+.list-radiu {
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 2px;
+  padding: 15px;
+  padding-left: 20px;
+}

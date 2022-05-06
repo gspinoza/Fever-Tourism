@@ -4,48 +4,52 @@ import { string } from '../SearchBar/SearchBar'
 import Search from 'antd/lib/transfer/search'
 
 
-const objectArray = [
-  {
-    id: 1,
-    name: "place1",
-    address: "address1",
-    rate: 2
-  },
-  {
-    id: 2,
-    name: "place1",
-    address: "address1",
-    rate: 2
-  }
-]
 
 function Result (props) {
 
-  const { SearchResult } = props
+  const { SearchResult, SearchRadius } = props
 
-  const [objects, setObjects] = useState(objectArray)
+  const [objects, setObjects] = useState([])
+  const [placeinfo, setPlaceinfo] = useState([])
 
   useEffect(() => {
 
     // Initialze the result
-    function dataInit (radius) {
+    function dataInit () {
       var requestOptions = { method: 'GET', redirect: 'follow' }
-      fetch("http://localhost:4000/nyc/places/" + radius + "/1000", requestOptions)
+      fetch("http://localhost:4000/nyc/places/" + SearchRadius + "/1000", requestOptions)
         .then(response => response.json())
         .then(result => {
-          console.log(result)
+          //console.log(result)
+          //console.log(1)
           // Initialize with highest rate
+          var object = []
+          result.map(item => {
+            if (item.rate >= 7) {
+              object.push(item)
+            }
+          })
+          setObjects(object)
         })
         .catch(error => console.log('error', error))
+
+      /*
+    console.log(objects)
+    for (let i = 0; i < objects.length; i++) {
+      placedata(objects[i].id)
+    }
+    console.log(placeinfo)
+    */
     }
 
     // Get the search result
-    function dataSearch (radius) {
+    function dataSearch () {
       var requestOptions = { method: 'GET', redirect: 'follow' }
-      fetch("http://localhost:4000/nyc/places/" + radius + "/1000", requestOptions)
+      fetch("http://localhost:4000/nyc/places/" + SearchRadius + "/1000", requestOptions)
         .then(response => response.json())
         .then(result => {
           var object = []
+          //console.log(2)
           result.map(item => {
             // add objects that contains SearchValue into list
             if (item.name.includes(SearchResult)) {
@@ -58,14 +62,29 @@ function Result (props) {
         .catch(error => console.log('error', error))
     }
 
-    if (SearchResult === '') {
-      dataInit(1000)
+    /*
+    function placedata (place_id) {
+      var object = []
+      var requestOptions = { method: 'GET', redirect: 'follow' }
+      fetch(`http://localhost:4000/nyc/place/details/${place_id}`, requestOptions)
+        .then(response => response.json())
+        .then(result => object.push(result)
+        )
+        .catch(error => console.log('error', error))
+
+      setPlaceinfo(object)
+    }
+    */
+    if (SearchResult === undefined || SearchResult === '') {
+      //console.log(SearchResult)
+      dataInit()
     }
     else {
-      dataSearch(1000)
+      //console.log(SearchResult)
+      dataSearch()
     }
 
-  }, [SearchResult])
+  }, [SearchResult, SearchRadius])
 
   return (
     <div className='Result'>
@@ -73,8 +92,8 @@ function Result (props) {
         {objects.map(item =>
           <li key={item.id}>
             <div>{item.name}</div>
-            <div>{item.address}</div>
-            <div>{item.rate}</div>
+            <div>Address:{item.address}</div>
+            <div>Rating:{item.rate}</div>
           </li>
         )}
       </ul>

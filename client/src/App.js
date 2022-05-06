@@ -10,18 +10,23 @@ import Planner from "./Components/Planner/Planner"
 
 function App () {
   const [value, setValue] = useState('')
+  const [radius, setRadius] = useState(1000)
 
   function getSearchValue (searchValue) {
     setValue(searchValue)
+  }
+
+  function getRadius (searchRadius) {
+    setRadius(searchRadius)
   }
 
   return (
     <div className="App">
       <Header />
       <SearchBar getSearchValue={getSearchValue} />
-      <ListFilter />
-      <Result SearchResult={value} />
-      <Map SearchResult={value} />
+      <ListFilter getRadius={getRadius} />
+      <Result SearchResult={value} SearchRadius={radius} />
+      <Map SearchResult={value} SearchRadius={radius} />
     </div>
   )
 }

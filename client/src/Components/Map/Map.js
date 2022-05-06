@@ -15,7 +15,9 @@ function Map (props) {
   const [lat, setLat] = useState(40.71427) // defalt lat of New York
   const [zoom, setZoom] = useState(12)
   //const [data, setData] = useState([])
-  const { SearchResult } = props
+  const { SearchResult, SearchRadius } = props
+
+  //console.log(SearchRadius)
 
   function addMarker (item) {
     const el = document.createElement('div')
@@ -37,35 +39,33 @@ function Map (props) {
   }
 
   useEffect(() => {
-    if (map.current) return // initialize map only once
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/streets-v11',
-      center: [lng, lat],
-      zoom: zoom
-    })
-  })
-
-
-  // set lng, lat, and zoom as the map moving
-  useEffect(() => {
-    if (!map.current) return // wait for map to initialize
-    map.current.on('move', () => {
-      setLng(map.current.getCenter().lng.toFixed(4))
-      setLat(map.current.getCenter().lat.toFixed(4))
-      setZoom(map.current.getZoom().toFixed(2))
-    })
+    if (!map.current) {// initialize map only once
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [lng, lat],
+        zoom: zoom
+      })
+    }
+    // set lng, lat, and zoom as the map moving
+    if (map.current) { // wait for map to initialize
+      map.current.on('move', () => {
+        setLng(map.current.getCenter().lng.toFixed(4))
+        setLat(map.current.getCenter().lat.toFixed(4))
+        setZoom(map.current.getZoom().toFixed(2))
+      })
+    }
   })
 
   // add marker on map
   useEffect(() => {
     // get the place detail
-    function dataInit (radius) {
+    function dataInit () {
       var requestOptions = { method: 'GET', redirect: 'follow' }
-      fetch("http://localhost:4000/nyc/places/" + radius + "/50000", requestOptions)
+      fetch("http://localhost:4000/nyc/places/" + SearchRadius + "/50000", requestOptions)
         .then(response => response.json())
         .then(result => {
-          console.log(1)
+          //console.log(1)
           // display the marker.
           result.map((item) => {
             addMarker(item)
@@ -75,12 +75,13 @@ function Map (props) {
     }
 
     // Get the search result
-    function dataSearch (radius) {
+    function dataSearch () {
       var requestOptions = { method: 'GET', redirect: 'follow' }
-      fetch("http://localhost:4000/nyc/places/" + radius + "/1000", requestOptions)
+      fetch("http://localhost:4000/nyc/places/" + SearchRadius + "/1000", requestOptions)
         .then(response => response.json())
         .then(result => {
-          console.log(2)
+          //console.log(SearchRadius)
+          //console.log(2)
           result.map(item => {
             // add Marker on Matched result
             if (item.name.includes(SearchResult)) {
@@ -91,14 +92,50 @@ function Map (props) {
         .catch(error => console.log('error', error))
     }
 
-    if (SearchResult === '') {
-      dataInit(1000)
+    if (SearchResult === '' || SearchResult === undefined) {
+      //console.log(SearchResult)
+      if (map.current) {
+        // initialize map again
+        map.current = new mapboxgl.Map({
+          container: mapContainer.current,
+          style: 'mapbox://styles/mapbox/streets-v11',
+          center: [lng, lat],
+          zoom: zoom
+        })
+
+        // set lng, lat, and zoom as the map moving
+        map.current.on('move', () => {
+          setLng(map.current.getCenter().lng.toFixed(4))
+          setLat(map.current.getCenter().lat.toFixed(4))
+          setZoom(map.current.getZoom().toFixed(2))
+        })
+      }
+      dataInit()
+
     }
     else {
-      dataSearch(1000)
+      //console.log(SearchResult)
+      if (map.current) {
+        // initialize map again
+        map.current = new mapboxgl.Map({
+          container: mapContainer.current,
+          style: 'mapbox://styles/mapbox/streets-v11',
+          center: [lng, lat],
+          zoom: zoom
+        })
+
+        // set lng, lat, and zoom as the map moving
+        map.current.on('move', () => {
+          setLng(map.current.getCenter().lng.toFixed(4))
+          setLat(map.current.getCenter().lat.toFixed(4))
+          setZoom(map.current.getZoom().toFixed(2))
+        })
+      }
+
+      dataSearch()
     }
 
-  }, [SearchResult])
+  }, [SearchResult, SearchRadius])
 
 
   return (
