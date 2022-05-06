@@ -3,6 +3,7 @@ const router = express.Router()
 // to fetch external data
 const fetch = require('node-fetch')
 var api_key = '5ae2e3f221c38a28845f05b60136f3be8a3b4fe024bc8cc4a3956574'
+var api_key_zip = 'b450db216156525dfaa2f39d77acaa27'
 
 function cleanData (data) {
     var opentripmapdata = JSON.parse(JSON.stringify(data))
@@ -52,6 +53,17 @@ function cleanPlaceDetails(data) {
   return JSON.stringify(newPlaceObject)
 }
 
+function cleanGeocodeData(data) {
+  var thezipcodesdata =  JSON.parse(JSON.stringify(data))
+
+  // data to return
+  let newPlaceObject = {};
+  newPlaceObject.lon = thezipcodesdata['location'][0]['longitude'];
+  newPlaceObject.lat = thezipcodesdata['location'][0]['latitude'];
+  // console.log(newPlaceObject);
+  return JSON.stringify(newPlaceObject)
+}
+
 const cors = require('cors')
 router.use(cors())
 
@@ -82,6 +94,16 @@ router.get('/nyc/place/details/:placeid', (req, res) => {
   fetch(`http://api.opentripmap.com/0.1/en/places/xid/${req.params.placeid}?apikey=${api_key}`, requestOptions)
     .then(response => response.json())
     .then(data => res.end(cleanPlaceDetails(data))) // return
+    .catch(error => console.log('error', error));
+});
+
+// get lon and lat given zipcode
+router.get('/geocode/:zipcode', (req, res) => {
+  // make external request
+  var requestOptions = {method: 'GET',redirect: 'follow'};
+  fetch(`https://thezipcodes.com/api/v1/search?zipCode=${req.params.zipcode}&countryCode=US&apiKey=${api_key_zip}`, requestOptions)
+    .then(response => response.json())
+    .then(data => res.end(cleanGeocodeData(data))) // return
     .catch(error => console.log('error', error));
 });
 
