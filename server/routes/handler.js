@@ -41,12 +41,23 @@ function cleanPlaceDetails(data) {
   let newPlaceObject = {};
   newPlaceObject.id = opentripmapdata['xid'];
   newPlaceObject.name = opentripmapdata['name'];
-  house_number = opentripmapdata['address']['house_number'];
-  road = opentripmapdata['address']['road'];
-  suburb = opentripmapdata['address']['suburb'];
-  city = opentripmapdata['address']['city'];
-  postcode = opentripmapdata['address']['postcode'];
-  newPlaceObject.address = `${house_number} ${road}, ${suburb}, ${city} ${postcode}`;
+    
+  var house_number = opentripmapdata['address']['house_number'];
+  house_number = (house_number != undefined) ? house_number : '';
+  var road = opentripmapdata['address']['road'];
+  road = (road != undefined) ? road : '';
+  var suburb = opentripmapdata['address']['suburb'];
+  suburb = (suburb != undefined) ? suburb : '';
+  var city = opentripmapdata['address']['city'];
+  city = (city != undefined) ? city : '';
+  var postcode = opentripmapdata['address']['postcode'];
+  postcode = (postcode != undefined) ? postcode : '';
+  var fullAddress = `${house_number} ${road}, ${suburb}, ${city} ${postcode}`
+  if (fullAddress.trim().charAt(0) == ',') {
+    fullAddress = `${suburb}, ${city} ${postcode}`;
+  }
+  newPlaceObject.address = fullAddress;
+    
   newPlaceObject.rate = opentripmapdata['rate'];
   newPlaceObject.kinds = opentripmapdata['kinds'];
   newPlaceObject.url = opentripmapdata['url'];
