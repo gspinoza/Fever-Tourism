@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './ListFilter.css'
-import { List, Checkbox } from 'antd'
+import { List, Checkbox, Radio, Space } from 'antd'
 import 'antd/dist/antd.css'
 
 
@@ -19,8 +19,13 @@ const Feature = [
   '.....',
 ]
 
-function ListFilter () {
 
+
+function ListFilter (props) {
+
+  const { getRadius } = props
+
+  const [radius, setRadius] = useState(1000)
 
   function filterType (e, placeType) {
     console.log(placeType)
@@ -38,6 +43,21 @@ function ListFilter () {
   }
 
   function filterFeature (e, feature) {
+    console.log(feature)
+    console.log(e.target.checked)
+
+    /* 
+    if e.target.checked == true{
+      add to map
+    }
+    else{
+      remove from map
+    } 
+
+    */
+  }
+
+  function filterRadius (e, feature) {
     console.log(feature)
     console.log(e.target.checked)
 
@@ -77,6 +97,10 @@ function ListFilter () {
 
     */
   }
+  function searchRadius (e) {
+    setRadius(e.target.value)
+    getRadius(e.target.value)
+  }
 
 
   return (
@@ -98,8 +122,17 @@ function ListFilter () {
         dataSource={Feature}
         renderItem={item =>
           <List.Item><Checkbox onChange={(e) => filterFeature(e, item)}>{item}</Checkbox></List.Item>}
-      />
-
+      /><br />
+      Radius
+      <div className='list-radiu'>
+        <Radio.Group onChange={searchRadius} value={radius}>
+          <Space direction="vertical">
+            <Radio value={1000}>1km</Radio>
+            <Radio value={5000}>5km</Radio>
+            <Radio value={10000}>10km</Radio>
+          </Space>
+        </Radio.Group>
+      </div>
     </div>
   )
 }
