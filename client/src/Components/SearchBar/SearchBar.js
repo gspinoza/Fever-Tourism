@@ -14,7 +14,9 @@ function SearchBar (props) {
 
   const [searchValue, setSearchValue] = useState()
 
-
+  function search () {
+    getSearchValue(searchValue)
+  }
   return (
     <div className='SearchBar'>
       <Search
@@ -24,7 +26,7 @@ function SearchBar (props) {
         size="large"
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
-        onSearch={getSearchValue(searchValue)}
+        onSearch={search}
       />
     </div>
   )

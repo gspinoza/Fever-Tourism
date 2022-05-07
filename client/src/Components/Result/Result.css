@@ -16,3 +16,12 @@ li {
   line-height: 35px;
   border-bottom: #eee 1px solid;
 }
+.Result-Name {
+  font-size: 20px;
+}
+.Result-Rate {
+  font-size: 10px;
+}
+.Result-Category {
+  font-size: 15px;
+}
