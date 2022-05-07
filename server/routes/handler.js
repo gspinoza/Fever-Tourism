@@ -15,6 +15,7 @@ function cleanData (data) {
   // data to return
   var placesArray = []
 
+
   // iterate opentripmapdata and create new json structure
   for (var i = 0, len = features.length; i < len; ++i) {
     // get current object
@@ -68,6 +69,7 @@ function cleanPlaceDetails (data) {
   newPlaceObject.wiki_info = opentripmapdata['wikipedia_extracts']['text']
   newPlaceObject.lon = opentripmapdata['point']['lon']
   newPlaceObject.lat = opentripmapdata['point']['lat']
+
   // console.log(newPlaceObject);
   return JSON.stringify(newPlaceObject)
 }
