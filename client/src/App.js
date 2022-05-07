@@ -6,12 +6,15 @@ import ListFilter from "./Components/ListFilter/ListFilter"
 import Result from './Components/Result/Result'
 import Map from "./Components/Map/Map"
 import Planner from "./Components/Planner/Planner"
+import axios from "axios"
 
 
 function App () {
   const [searchInput, setSearchInput] = useState('')
   const [radius, setRadius] = useState(1000)
   const [data, setData] = useState([])
+  const [placeinfo, setPlaceinfo] = useState([])
+
 
   function getSearchValue (searchValue) {
     setSearchInput(searchValue)
@@ -21,53 +24,60 @@ function App () {
     setRadius(searchRadius)
   }
 
+
+  // Initialze the result
+  async function dataInit () {
+    //var requestOptions = { method: 'GET', redirect: 'follow' }
+    await axios(`http://localhost:4000/axios/nyc/places/${radius}/35/-74.0059/40.71427`)
+      .then(response => response.data)
+
+      .then(result => {
+        console.log(1)
+        //console.log(radius)
+        // Initialize with highest rate
+        var object = []
+        result.map(item => {
+          if (item.rate >= 7) {
+            object.push(item)
+            //console.log(item)
+          }
+        })
+        setData(object)
+      })
+      .catch(error => console.log('error', error))
+
+
+  }
+
+
+  // Get the search result
+  function dataSearch () {
+    //var requestOptions = { method: 'GET', redirect: 'follow' }
+    axios(`http://localhost:4000/axios/nyc/places/${radius}/100/-74.0059/40.71427`)
+      .then(response => response.data)
+      .then(function (result) {
+        var object = []
+        console.log(2)
+        result.map(item => {
+          // add objects that contains SearchValue into list
+          if (item.name.includes(searchInput)) {
+            object.push(item)
+          }
+        })
+        // replace the objects with search result
+        setData(object)
+      })
+      .catch(error => console.log('error', error))
+  }
+
+
   useEffect(() => {
+    dataInit()
 
-    // Initialze the result
-    function dataInit () {
-      var requestOptions = { method: 'GET', redirect: 'follow' }
-      fetch("http://localhost:4000/nyc/places/" + radius + "/1000/-74.0059/40.71427", requestOptions)
-        .then(response => response.json())
-        .then(result => {
-          //console.log(result)
-          console.log(1)
-          // Initialize with highest rate
-          var object = []
-          result.map(item => {
-            if (item.rate >= 7) {
-              //placedata(item.id)
-              object.push(item)
-              //console.log(item)
-            }
-          })
-          setData(object)
-        })
-        .catch(error => console.log('error', error))
-
-    }
-
-    // Get the search result
-    function dataSearch () {
-      var requestOptions = { method: 'GET', redirect: 'follow' }
-      fetch("http://localhost:4000/nyc/places/" + radius + "/1000/-74.0059/40.71427", requestOptions)
-        .then(response => response.json())
-        .then(result => {
-          var object = []
-          console.log(2)
-          result.map(item => {
-            // add objects that contains SearchValue into list
-            if (item.name.includes(searchInput)) {
-              object.push(item)
-            }
-          })
-          // replace the objects with search result
-          setData(object)
-        })
-        .catch(error => console.log('error', error))
-    }
+  }, [])
 
 
-
+  useEffect(() => {
     if (searchInput === undefined || searchInput === '') {
       console.log(searchInput)
       dataInit()
@@ -77,8 +87,9 @@ function App () {
       console.log(1111)
       dataSearch()
     }
-
   }, [searchInput, radius])
+
+
 
   return (
     <div className="App">

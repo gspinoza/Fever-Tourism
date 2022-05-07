@@ -2,6 +2,7 @@ import './Map.css'
 import React, { useRef, useEffect, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import Planner from '../Planner/Planner'
+import axios from 'axios'
 
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiNTA1NTM5MzY3IiwiYSI6ImNsMm1mbXA2bzBsM2IzcHA2d2duN3E2M3IifQ.fKjGBQZADXaVOxZA3p4eDw'
@@ -14,12 +15,16 @@ function Map (props) {
   const [lng, setLng] = useState(-74.0059) // defalt lng of New York
   const [lat, setLat] = useState(40.71427) // defalt lat of New York
   const [zoom, setZoom] = useState(12)
-  //const [data, setData] = useState([])
   const { passData } = props
 
   //console.log(SearchRadius)
 
-  function addMarker (item) {
+  // Add marker on map and popup place detail
+  async function placedata (item) {
+    const result = await axios(`http://localhost:4000/axios/nyc/place/details/${item.id}`)
+      .then(response => response.data)
+      .catch(error => console.log('error', error))
+
     const el = document.createElement('div')
     el.className = 'marker'
 
@@ -30,14 +35,13 @@ function Map (props) {
       .setPopup(
         new mapboxgl.Popup({ offset: 25 })
           .setHTML(
-            `<h3>${item.name}</h3>
-                    <div>Rating:${item.rate}</div>
-                    <!-- <div>${item.rate}</div> --> `
+            `<h3>${result.name}</h3>
+            <div>Rating:${result.rate}</div>`
           )
       )
       .addTo(map.current)
-  }
 
+  }
 
   useEffect(() => {
     if (!map.current) {// initialize map only once
@@ -57,87 +61,7 @@ function Map (props) {
       })
     }
   })
-  /*
-  // add marker on map
-  useEffect(() => {
-    // get the place detail
-    function dataInit () {
-      var requestOptions = { method: 'GET', redirect: 'follow' }
-      fetch("http://localhost:4000/nyc/places/" + SearchRadius + "/1000/" + lng + "/" + lat, requestOptions)
-        .then(response => response.json())
-        .then(result => {
-          //console.log(1)
-          // display the marker.
-          result.map((item) => {
-            addMarker(item)
-          })
-        })
-        .catch(error => console.log('error', error))
-    }
 
-    // Get the search result
-    function dataSearch () {
-      var requestOptions = { method: 'GET', redirect: 'follow' }
-      fetch("http://localhost:4000/nyc/places/" + SearchRadius + "/1000/" + lng + "/" + lat, requestOptions)
-        .then(response => response.json())
-        .then(result => {
-          //console.log(SearchRadius)
-          //console.log(2)
-          result.map(item => {
-            // add Marker on Matched result
-            if (item.name.includes(SearchResult)) {
-              addMarker(item)
-            }
-          })
-        })
-        .catch(error => console.log('error', error))
-    }
-
-    if (SearchResult === '' || SearchResult === undefined) {
-      //console.log(SearchResult)
-      if (map.current) {
-        // initialize map again
-        map.current = new mapboxgl.Map({
-          container: mapContainer.current,
-          style: 'mapbox://styles/mapbox/streets-v11',
-          center: [lng, lat],
-          zoom: zoom
-        })
-
-        // set lng, lat, and zoom as the map moving
-        map.current.on('move', () => {
-          setLng(map.current.getCenter().lng.toFixed(4))
-          setLat(map.current.getCenter().lat.toFixed(4))
-          setZoom(map.current.getZoom().toFixed(2))
-        })
-      }
-      dataInit()
-
-    }
-    else {
-      //console.log(SearchResult)
-      if (map.current) {
-        // initialize map again
-        map.current = new mapboxgl.Map({
-          container: mapContainer.current,
-          style: 'mapbox://styles/mapbox/streets-v11',
-          center: [lng, lat],
-          zoom: zoom
-        })
-
-        // set lng, lat, and zoom as the map moving
-        map.current.on('move', () => {
-          setLng(map.current.getCenter().lng.toFixed(4))
-          setLat(map.current.getCenter().lat.toFixed(4))
-          setZoom(map.current.getZoom().toFixed(2))
-        })
-      }
-
-      dataSearch()
-    }
-
-  }, [SearchResult, SearchRadius])
-  */
 
   useEffect(() => {
     if (map.current) {
@@ -157,7 +81,7 @@ function Map (props) {
       })
     }
     for (let i = 0; i < passData.length; i++) {
-      addMarker(passData[i])
+      placedata(passData[i])
     }
   }, [passData])
 
