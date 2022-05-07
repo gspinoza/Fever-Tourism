@@ -3,7 +3,8 @@ const router = express.Router()
 // to fetch external data
 const fetch = require('node-fetch')
 const axios = require("axios");
-var api_key = '5ae2e3f221c38a28845f05b60136f3be8a3b4fe024bc8cc4a3956574'
+// var api_key = '5ae2e3f221c38a28845f05b60136f3be8a3b4fe024bc8cc4a3956574'
+var api_key = '5ae2e3f221c38a28845f05b6f30a1b758501cadb129ddd11bd3f9499'
 var api_key_zip = 'b450db216156525dfaa2f39d77acaa27'
 
 function cleanData (data) {
