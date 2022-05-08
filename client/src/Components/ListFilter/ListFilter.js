@@ -1,16 +1,19 @@
 import React, { useState } from 'react'
 import './ListFilter.css'
 import { List, Checkbox, Radio, Space } from 'antd'
-import 'antd/dist/antd.css'
+
 
 
 const PlaceType = [
+
   'Museum',
   'Park',
+  'Entertainment',
   'Natural',
   'Cultural',
   'Historical',
-  '....',
+  'Sculpture',
+  'Monument',
 ]
 
 const Feature = [
@@ -20,28 +23,59 @@ const Feature = [
 ]
 
 
-
 function ListFilter (props) {
 
-  const { getRadius } = props
+  const { getRadius, currentFilter, getSearchFilter } = props
 
   const [radius, setRadius] = useState(1000)
 
-  function filterType (e, placeType) {
-    console.log(placeType)
-    console.log(e.target.checked)
+  const [checkList, setCheckList] = useState([])
 
-    /* 
-    if e.target.checked == true{
-      add to map
+  function filterType (e) {
+
+    var temp = currentFilter
+    var tag
+    var check = checkList
+
+    if (e.target.value === 'Natural') {
+      tag = 'natural'
+    } else if (e.target.value === 'Historical') {
+      tag = 'historic'
+    } else if (e.target.value === 'Cultural') {
+      tag = 'cultural'
+    } else if (e.target.value === 'Entertainment') {
+      tag = 'theatres_and_entertainments'
+    } else if (e.target.value === 'Sculpture') {
+      tag = 'sculptures'
+    } else if (e.target.value === 'Monument') {
+      tag = 'monuments'
+    } else {
+      tag = e.target.value
     }
-    else{
-      remove from map
-    } 
 
-    */
+    if (e.target.checked) {
+      // add to filter
+      temp.push(tag)
+      temp = currentFilter.filter(item => item != '')
+      // add to checkList
+      check.push(e.target.value)
+    }
+    else {
+      //remove from filter
+      temp = currentFilter.filter(item => item != tag)
+      //remove from checkList
+      check = checkList.filter(item => item != e.target.value)
+
+    }
+    setCheckList(check)
+    getSearchFilter(temp)
   }
 
+  function checkAllType (e) {
+    const temp = ['natural', 'historic', 'cultural', 'theatres_and_entertainments', 'sculptures', 'monuments', 'Park', 'Museum']
+    setCheckList(e.target.checked ? PlaceType : [])
+    getSearchFilter(e.target.checked ? temp : [])
+  }
   function filterFeature (e, feature) {
     console.log(feature)
     console.log(e.target.checked)
@@ -57,33 +91,8 @@ function ListFilter (props) {
     */
   }
 
-  function filterRadius (e, feature) {
-    console.log(feature)
-    console.log(e.target.checked)
 
-    /* 
-    if e.target.checked == true{
-      add to map
-    }
-    else{
-      remove from map
-    } 
 
-    */
-  }
-  function checkAllType (e) {
-    console.log(e.target.checked)
-
-    /* 
-    if e.target.checked == true{
-      add to map
-    }
-    else{
-      remove from map
-    } 
-
-    */
-  }
   function checkAllFeature (e) {
     console.log(e.target.checked)
 
@@ -102,7 +111,6 @@ function ListFilter (props) {
     getRadius(e.target.value)
   }
 
-
   return (
     <div className="ListFilter">
       Catetories
@@ -112,7 +120,7 @@ function ListFilter (props) {
         bordered
         dataSource={PlaceType}
         renderItem={item =>
-          <List.Item><Checkbox onChange={(e) => filterType(e, item)}>{item}</Checkbox></List.Item>}
+          <List.Item><Checkbox checked={checkList.includes(item) ? true : false} value={item} onChange={filterType}>{item}</Checkbox></List.Item>}
       /><br />
       Features
       <Checkbox className='list-all' onChange={checkAllFeature}>Check All</Checkbox><br />

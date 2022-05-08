@@ -1,7 +1,19 @@
 .SearchBar {
-  width: 18%;
+  width: 100%;
   font-size: 50px;
-  margin: 0.5%;
-  margin-left: 1%;
+}
+
+.SearchBar-Name {
+  width: 18%;
+  float: left;
+  margin-left: 1.5%;
   margin-bottom: 0%;
+}
+
+.SearchBar-ZipCode {
+  width: 18%;
+  float: left;
+  margin-left: 2%;
+  margin-bottom: 0%;
+  margin-right: 10%;
 }

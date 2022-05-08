@@ -3,5 +3,5 @@
   font-size: 30px;
   padding: 15px;
   margin-bottom: 20px;
-  background-color: rgb(43, 131, 245);
+  background: linear-gradient(to right, rgb(246, 231, 248), rgb(22, 94, 143));
 }

@@ -2,8 +2,10 @@
   width: 57%;
   height: 100%;
   font-size: 50px;
-  float: left;
+  float: right;
   margin: 0.5%;
+
+  margin-right: 1.5%;
 }
 
 .map-container {
@@ -46,4 +48,9 @@
 }
 .Map-rate {
   font-size: 50px;
+}
+
+.detail {
+  height: 100px;
+  width: 100px;
 }
