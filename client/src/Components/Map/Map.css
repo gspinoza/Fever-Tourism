@@ -1,5 +1,5 @@
 .Map {
-  width: 57%;
+  width: 63%;
   height: 100%;
   font-size: 50px;
   float: right;
@@ -9,7 +9,7 @@
 }
 
 .map-container {
-  height: 700px;
+  height: 900px;
 }
 
 .sidebar {
@@ -50,7 +50,11 @@
   font-size: 50px;
 }
 
-.detail {
-  height: 100px;
-  width: 100px;
+.Map-popup {
+  max-width: 95%;
+}
+
+.Map-popup img {
+  width: min-content;
+  height: min-content;
 }

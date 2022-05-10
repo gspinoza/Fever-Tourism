@@ -136,8 +136,8 @@ function ListFilter (props) {
         <Radio.Group onChange={searchRadius} value={radius}>
           <Space direction="vertical">
             <Radio value={1000}>1km</Radio>
+            <Radio value={2000}>3km</Radio>
             <Radio value={5000}>5km</Radio>
-            <Radio value={10000}>10km</Radio>
           </Space>
         </Radio.Group>
       </div>
