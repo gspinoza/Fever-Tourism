@@ -116,13 +116,39 @@ function cleanCrimeData(data) {
 // cleans up weather data
 function cleanWeatherData(data) {
   var weatherData = JSON.parse(JSON.stringify(data))
-  
+
   let newWeatherObject = {}
   newWeatherObject.temp = weatherData["current"]["temp"]
   newWeatherObject.weather = weatherData["current"]["weather"][0]["main"]
+  newWeatherObject.desc = weatherData["current"]["weather"][0]["description"]
   newWeatherObject.lon = weatherData["lon"]
   newWeatherObject.lat = weatherData["lat"]
-  
+
+  // keeps weather for upcoming days
+  var dailyArray = []
+
+  // iterate daily weather and create new json structure
+  for (var i = 0, len = weatherData["daily"].length; i < len; ++i) {
+    // get current object
+    var dayObject = weatherData["daily"][i]
+    // create a new object
+    let day = {}
+    // set new values
+    day.date = unixToRegularDate(dayObject["dt"])
+    // day.temp = JSON.stringify(dayObject["temp"])
+    day.day = dayObject["temp"]["day"]
+    day.min = dayObject["temp"]["min"]
+    day.max = dayObject["temp"]["max"]
+    day.night = dayObject["temp"]["night"]
+    day.eve = dayObject["temp"]["eve"]
+    day.morn = dayObject["temp"]["morn"]
+    day.weather = dayObject["weather"][0]["main"]
+    day.desc = dayObject["weather"][0]["description"]
+    // push object into array
+    dailyArray.push(day)
+  }
+  newWeatherObject.daily = dailyArray
+
   return JSON.stringify(newWeatherObject)
 }
 
