@@ -126,6 +126,13 @@ function cleanWeatherData(data) {
   return JSON.stringify(newWeatherObject)
 }
 
+//timestamp conversion
+function unixToRegularDate(timestamp) {
+  var d = new Date(timestamp*1000);
+  timeStampCon = d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
+  return timeStampCon;
+};
+
 const cors = require('cors')
 router.use(cors())
 
