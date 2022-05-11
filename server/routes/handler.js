@@ -173,5 +173,22 @@ router.get('/geocode/:zipcode', (req, res) => {
     .catch(error => console.log('error', error))
 })
 
+// get all crime data from given borough
+router.get('/nyccrime/borough/:borough', (req, res) => {
+  // make external request
+  var requestOptions = { method: 'GET', redirect: 'follow' }
+  axios({
+    method: 'GET',
+    url: `https://data.cityofnewyork.us/resource/qb7u-rbmr.json?boro_nm=${req.params.borough}`,
+    data: { limit : 5000, app_token : crime_data_token }})
+    .then(function (response) {
+      res.send(cleanCrimeData(response['data']))
+      res.end()
+    }) 
+    .catch(function (error) {
+      console.error(error);
+    })
+})
+
 module.exports = router
 
