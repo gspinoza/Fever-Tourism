@@ -113,6 +113,19 @@ function cleanCrimeData(data) {
   return JSON.stringify(crimesArray)
 }
 
+// cleans up weather data
+function cleanWeatherData(data) {
+  var weatherData = JSON.parse(JSON.stringify(data))
+  
+  let newWeatherObject = {}
+  newWeatherObject.temp = weatherData["current"]["temp"]
+  newWeatherObject.weather = weatherData["current"]["weather"][0]["main"]
+  newWeatherObject.lon = weatherData["lon"]
+  newWeatherObject.lat = weatherData["lat"]
+  
+  return JSON.stringify(newWeatherObject)
+}
+
 const cors = require('cors')
 router.use(cors())
 
