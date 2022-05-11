@@ -5,21 +5,30 @@ import SearchBar from './Components/SearchBar/SearchBar'
 import ListFilter from "./Components/ListFilter/ListFilter"
 import Result from './Components/Result/Result'
 import Map from "./Components/Map/Map"
+import Planner from "./Components/Planner/Planner"
 import axios from "axios"
 import 'antd/dist/antd.css'
 
 const defaultZipCode = 10015
+const defaultRadius = 1000
+const defaultLng = -73.98888545
+const defaultLat = 40.74743397
+
 function App () {
   const [searchInput, setSearchInput] = useState('')
   const [searchFilter, setSearchFilter] = useState([''])
-  const [radius, setRadius] = useState(1000)
+  const [radius, setRadius] = useState(defaultRadius)
   const [data, setData] = useState([])
   const [ZipCode, setZipCode] = useState(defaultZipCode)
-  const [lng, setLng] = useState(-73.98888545)
-  const [lat, setLat] = useState(40.74743397)
+  const [lng, setLng] = useState(defaultLng)
+  const [lat, setLat] = useState(defaultLat)
+  const [plannerVisible, setPlannerVisible] = useState(false)
+  const [plannerList, setPlannerList] = useState([])
+  const [resultPopup, setResultPopup] = useState({})
 
-
-
+  function getResultPopup (resultItem) {
+    setResultPopup(resultItem)
+  }
   function getSearchValue (searchValue) {
     setSearchInput(searchValue)
   }
@@ -29,18 +38,25 @@ function App () {
   }
 
   function getSearchFilter (placeType) {
-    console.log(placeType)
     setSearchFilter(placeType)
   }
 
   function getSearchZipCode (ZipCode) {
-    console.log(ZipCode)
     setZipCode(ZipCode)
+  }
+
+  function addToPlanner (placeinfo) {
+    setPlannerList(placeinfo)
+    console.log(placeinfo)
   }
 
   function setLngLat (lng, lat) {
     setLng(lng)
     setLat(lat)
+  }
+
+  function plannerOpenClose (visible) {
+    setPlannerVisible(visible)
   }
 
   // Make categories uppercase
@@ -51,16 +67,17 @@ function App () {
     return item
 
   }
-  // Initialze the result
+  // Use for initialized the result
   async function dataInit () {
 
+    // Get the lng and lat by given zip code
     const ZipResult = await fetch(`http://localhost:4000/geocode/${ZipCode}`)
       .then(response => response.json())
       .catch(error => console.log('error', error))
 
     setLngLat(ZipResult.lon, ZipResult.lat)
 
-    //var requestOptions = { method: 'GET', redirect: 'follow' }
+    // Get the place result by given radius, lon, and lat
     await axios(`http://localhost:4000/axios/nyc/places/${radius}/500/${ZipResult.lon}/${ZipResult.lat}`)
       .then(response => response.data)
 
@@ -69,11 +86,13 @@ function App () {
         // Initialize with highest rate
         var object = []
         result.map(item => {
+          // In case the user did not check anything in category, will return place with highest rating
           if (searchFilter[0] == '' || searchFilter.length == 0) {
             if (item.rate >= 7) {
               object.push(uppercase(item))
             }
           }
+          // Otherwise get the matched result
           else {
             for (let i = 0; i < searchFilter.length; i++) {
               if (item.name.includes(searchFilter[i])) {
@@ -88,6 +107,7 @@ function App () {
                 }
               }
             }
+
           }
         })
 
@@ -100,8 +120,10 @@ function App () {
   }
 
 
-  // Get the search result
+  // Use for search result
   async function dataSearch () {
+
+    // Get the lng and lat by given zipcode
     const ZipResult = await fetch(`http://localhost:4000/geocode/${ZipCode}`)
       .then(response => response.json())
       .catch(error => console.log('error', error))
@@ -109,31 +131,39 @@ function App () {
     setLngLat(ZipResult.lon, ZipResult.lat)
     console.log(ZipResult)
 
-    //var requestOptions = { method: 'GET', redirect: 'follow' }
+    // Get the place result by given radius, lon, and lat
     await axios(`http://localhost:4000/axios/nyc/places/${radius}/1000/${ZipResult.lon}/${ZipResult.lat}`)
       .then(response => response.data)
       .then(function (result) {
-        console.log(result)
+        // new array to store the matched result
         var object = []
         result.map(item => {
+          // In case user did not filter the result (category)
           if (searchFilter[0] == '' || searchFilter.length == 0) {
+            // If there is no input on place searchbar
             if (searchInput != '') {
               // add objects that contains SearchValue into list
               if (item.name.includes(searchInput)) {
                 object.push(uppercase(item))
               }
-            } else {
+            }
+            // Other wise provide the place with highest rating
+            else {
               if (item.rate >= 7) {
                 object.push(uppercase(item))
               }
             }
           }
+          // In case the user did filter the result
           else {
+            // add the match result into the array
             for (let i = 0; i < searchFilter.length; i++) {
+              // Check for name contains (park, museum)
               if (item.name.includes(searchFilter[i])) {
                 object.push(uppercase(item))
                 break
               }
+              // Check for place category 
               else {
                 if (item.category.includes(searchFilter[i])) {
                   object.push(uppercase(item))
@@ -171,19 +201,25 @@ function App () {
 
 
   useEffect(() => {
+
+    // Initialize the zipcode
     if (ZipCode === undefined || ZipCode === '') {
       setZipCode(defaultZipCode)
     }
 
+    // Initialize the Input from search bar
     if (searchInput === undefined) {
       setSearchInput('')
     }
+
     console.log(searchInput)
     console.log(ZipCode)
+    // Case : when user did not search anything, provide default data
     if (searchInput === '' && ZipCode === defaultZipCode) {
       console.log("0000")
       dataInit()
     }
+    // Case : when user did provide search values
     else {
       console.log(1111)
       dataSearch()
@@ -197,10 +233,31 @@ function App () {
   return (
     <div className="App">
       <Header />
-      <SearchBar getSearchValue={getSearchValue} getSearchZipCode={getSearchZipCode} />
-      <Map passData={data} passLng={lng} passLat={lat} />
-      <Result passData={data} />
-      <ListFilter getRadius={getRadius} currentFilter={searchFilter} getSearchFilter={getSearchFilter} />
+      <SearchBar
+        getSearchValue={getSearchValue}
+        getSearchZipCode={getSearchZipCode}
+        showPlanner={plannerOpenClose}
+      />
+      <Map
+        passData={data}
+        passLng={lng}
+        passLat={lat}
+        addPlanner={addToPlanner}
+        showPlanner={plannerOpenClose}
+        passPlannerList={plannerList}
+        resultPopup={resultPopup}
+      />
+      <Result passData={data}
+        getResultPopup={getResultPopup}
+      />
+      <ListFilter
+        getRadius={getRadius}
+        currentFilter={searchFilter}
+        getSearchFilter={getSearchFilter}
+      />
+      {plannerVisible ?
+        <Planner passPlannerList={plannerList} showPlanner={plannerOpenClose} addPlanner={addToPlanner} />
+        : null}
     </div>
   )
 }

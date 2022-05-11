@@ -19,7 +19,6 @@ const PlaceType = [
 const Feature = [
   'Crime',
   'Weather',
-  '.....',
 ]
 
 

@@ -9,7 +9,7 @@ const { Search } = Input
 export var string
 
 function SearchBar (props) {
-  const { getSearchValue, getSearchZipCode } = props
+  const { getSearchValue, getSearchZipCode, showPlanner } = props
 
   const [searchValue, setSearchValue] = useState()
   const [searchZipCode, setSearchZipCode] = useState()
@@ -21,6 +21,11 @@ function SearchBar (props) {
     console.log(searchZipCode)
     getSearchZipCode(searchZipCode)
   }
+
+  function openPlanner () {
+    showPlanner(true)
+  }
+
   return (
     <div className='SearchBar'>
       <div className='SearchBar-Name'>
@@ -45,6 +50,7 @@ function SearchBar (props) {
           onSearch={ZipCodeSearch}
         />
       </div>
+      <button className='ViewPlanner' onClick={openPlanner} role="button">View Planner</button>
     </div>
   )
 }

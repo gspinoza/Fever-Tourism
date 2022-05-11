@@ -9,17 +9,18 @@
   overflow: scroll;
   border: 1px solid rgb(221, 221, 221);
   border-radius: 2px;
-  height: 1000px;
+  height: 930px;
 }
-ul {
+.Result ul {
   padding: 10px;
 }
-li {
+.Result li {
   list-style: none;
   padding: 10px;
   line-height: 35px;
   border-bottom: #eee 1px solid;
 }
+
 .Result-Name {
   font-size: 20px;
 }
