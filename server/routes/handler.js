@@ -7,6 +7,7 @@ const axios = require("axios")
 
 var api_key = '5ae2e3f221c38a28845f05b6f30a1b758501cadb129ddd11bd3f9499'
 var api_key_zip = 'b450db216156525dfaa2f39d77acaa27'
+var crime_data_token = 'bhpDzWIkU2Me9kazo21uTi1Bc'
 
 function cleanData (data) {
   var opentripmapdata = JSON.parse(JSON.stringify(data))
@@ -86,6 +87,31 @@ function cleanGeocodeData (data) {
   return JSON.stringify(newPlaceObject)
 }
 
+// cleans up crime data
+function cleanCrimeData(data) {
+  var crimeData = JSON.parse(JSON.stringify(data))
+  // data to return
+  var crimesArray = []
+
+  // iterate crimeData and create new json structure
+  for (var i = 0, len = crimeData.length; i < len; ++i) {
+    // get current object
+    var crimeObject = crimeData[i]
+    // create a new object
+    let newCrimeObject = {}
+    // set new values
+    newCrimeObject.date = crimeObject["cmplnt_fr_dt"]
+    newCrimeObject.crime_type = crimeObject["law_cat_cd"]
+    newCrimeObject.crime_desc = crimeObject["ofns_desc"]
+    newCrimeObject.police_desc = crimeObject["pd_desc"]
+    newCrimeObject.lon = crimeObject["longitude"]
+    newCrimeObject.lat = crimeObject["latitude"]
+    // push object into array
+    crimesArray.push(newCrimeObject)
+  }
+  return JSON.stringify(crimesArray)
+}
+
 const cors = require('cors')
 router.use(cors())
 
@@ -145,6 +171,38 @@ router.get('/geocode/:zipcode', (req, res) => {
     .then(response => response.json())
     .then(data => res.end(cleanGeocodeData(data))) // return
     .catch(error => console.log('error', error))
+})
+
+// get all crime data from given borough
+router.get('/nyccrime/borough/:borough', (req, res) => {
+  // make external request
+  var requestOptions = { method: 'GET', redirect: 'follow' }
+  axios({
+    method: 'GET',
+    url: `https://data.cityofnewyork.us/resource/qb7u-rbmr.json?boro_nm=${req.params.borough}`,
+    data: { limit : 5000, app_token : crime_data_token }})
+    .then(function (response) {
+      res.send(cleanCrimeData(response['data']))
+      res.end()
+    }) 
+    .catch(function (error) {
+      console.error(error);
+    })
+})
+
+// get crime data from given location and radius
+router.get('/nyccrime/location/:radius/:lon/:lat', (req, res) => {
+  // make external request
+  axios({
+    method: 'GET',
+    url: `https://data.cityofnewyork.us/resource/qb7u-rbmr.json?$where=within_circle(lat_lon, ${req.params.lat}, ${req.params.lon}, ${req.params.radius})`,
+    data: { limit : 5000, app_token : crime_data_token
+    }}) .then(function (response) {
+      res.send(cleanCrimeData(response['data']))
+      res.end()
+    }) .catch(function (error) {
+      console.error(error);
+    })
 })
 
 module.exports = router
