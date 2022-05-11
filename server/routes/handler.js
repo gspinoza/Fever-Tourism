@@ -116,15 +116,48 @@ function cleanCrimeData(data) {
 // cleans up weather data
 function cleanWeatherData(data) {
   var weatherData = JSON.parse(JSON.stringify(data))
-  
+
   let newWeatherObject = {}
   newWeatherObject.temp = weatherData["current"]["temp"]
   newWeatherObject.weather = weatherData["current"]["weather"][0]["main"]
+  newWeatherObject.desc = weatherData["current"]["weather"][0]["description"]
   newWeatherObject.lon = weatherData["lon"]
   newWeatherObject.lat = weatherData["lat"]
-  
+
+  // keeps weather for upcoming days
+  var dailyArray = []
+
+  // iterate daily weather and create new json structure
+  for (var i = 0, len = weatherData["daily"].length; i < len; ++i) {
+    // get current object
+    var dayObject = weatherData["daily"][i]
+    // create a new object
+    let day = {}
+    // set new values
+    day.date = unixToRegularDate(dayObject["dt"])
+    // day.temp = JSON.stringify(dayObject["temp"])
+    day.day = dayObject["temp"]["day"]
+    day.min = dayObject["temp"]["min"]
+    day.max = dayObject["temp"]["max"]
+    day.night = dayObject["temp"]["night"]
+    day.eve = dayObject["temp"]["eve"]
+    day.morn = dayObject["temp"]["morn"]
+    day.weather = dayObject["weather"][0]["main"]
+    day.desc = dayObject["weather"][0]["description"]
+    // push object into array
+    dailyArray.push(day)
+  }
+  newWeatherObject.daily = dailyArray
+
   return JSON.stringify(newWeatherObject)
 }
+
+//timestamp conversion
+function unixToRegularDate(timestamp) {
+  var d = new Date(timestamp*1000);
+  timeStampCon = d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
+  return timeStampCon;
+};
 
 const cors = require('cors')
 router.use(cors())
@@ -215,6 +248,23 @@ router.get('/nyccrime/location/:radius/:lon/:lat', (req, res) => {
       res.send(cleanCrimeData(response['data']))
       res.end()
     }) .catch(function (error) {
+      console.error(error);
+    })
+})
+
+// get weather from given location
+router.get('/weather/:lon/:lat', (req, res) => {
+  var exclude = 'minutely,hourly'
+  // make external request
+  var requestOptions = { method: 'GET', redirect: 'follow' }
+  axios({
+    method: 'GET',
+    url: `https://api.openweathermap.org/data/2.5/onecall?lat=${req.params.lat}&lon=${req.params.lon}&exclude=${exclude}&units=imperial&appid=${weather_key}`})
+    .then(function (response) {
+      res.send(cleanWeatherData(response['data']))
+      res.end()
+    }) 
+    .catch(function (error) {
       console.error(error);
     })
 })
