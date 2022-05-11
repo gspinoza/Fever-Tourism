@@ -87,6 +87,31 @@ function cleanGeocodeData (data) {
   return JSON.stringify(newPlaceObject)
 }
 
+// cleans up crime data
+function cleanCrimeData(data) {
+  var crimeData = JSON.parse(JSON.stringify(data))
+  // data to return
+  var crimesArray = []
+
+  // iterate crimeData and create new json structure
+  for (var i = 0, len = crimeData.length; i < len; ++i) {
+    // get current object
+    var crimeObject = crimeData[i]
+    // create a new object
+    let newCrimeObject = {}
+    // set new values
+    newCrimeObject.date = crimeObject["cmplnt_fr_dt"]
+    newCrimeObject.crime_type = crimeObject["law_cat_cd"]
+    newCrimeObject.crime_desc = crimeObject["ofns_desc"]
+    newCrimeObject.police_desc = crimeObject["pd_desc"]
+    newCrimeObject.lon = crimeObject["longitude"]
+    newCrimeObject.lat = crimeObject["latitude"]
+    // push object into array
+    crimesArray.push(newCrimeObject)
+  }
+  return JSON.stringify(crimesArray)
+}
+
 const cors = require('cors')
 router.use(cors())
 
