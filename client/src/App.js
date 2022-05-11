@@ -107,16 +107,11 @@ function App () {
                 }
               }
             }
-
           }
         })
-
         setData(object)
-
       })
       .catch(error => console.log('error', error))
-
-
   }
 
 
@@ -173,7 +168,6 @@ function App () {
               }
             }
           }
-
         })
 
         if (object.length === 0) {
@@ -185,19 +179,10 @@ function App () {
           //console.log('321')
           setData(object)
         }
-
       })
       .catch(error => console.log('error', error))
 
   }
-
-
-  /*
-  useEffect(() => {
-    dataInit()
-
-  }, [])
-  */
 
 
   useEffect(() => {
@@ -225,9 +210,6 @@ function App () {
       dataSearch()
     }
   }, [searchInput, searchFilter, radius, ZipCode])
-
-
-
 
 
   return (
