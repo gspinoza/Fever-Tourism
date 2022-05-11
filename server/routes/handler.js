@@ -7,6 +7,7 @@ const axios = require("axios")
 
 var api_key = '5ae2e3f221c38a28845f05b6f30a1b758501cadb129ddd11bd3f9499'
 var api_key_zip = 'b450db216156525dfaa2f39d77acaa27'
+var crime_data_token = 'bhpDzWIkU2Me9kazo21uTi1Bc'
 
 function cleanData (data) {
   var opentripmapdata = JSON.parse(JSON.stringify(data))
