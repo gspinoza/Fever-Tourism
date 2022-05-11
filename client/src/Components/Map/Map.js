@@ -18,7 +18,9 @@ const Marker = ({ onClick, place }) => {
 
 
 function Map (props) {
-  const { passData, passLng, passLat, addPlanner, showPlanner, passPlannerList, resultPopup } = props
+  const { passData, passLng, passLat, addPlanner,
+    showPlanner, passPlannerList, resultPopup,
+    getDrawerVisible } = props
   const mapContainer = useRef(null)
   const map = useRef(null)
   const [lng, setLng] = useState(-73.98888545) // defalt lng of New York
@@ -30,9 +32,11 @@ function Map (props) {
 
   function showDrawer () {
     setDetailVisible(true)
+    getDrawerVisible(true)
   }
   function closeDetail () {
     setDetailVisible(false)
+    getDrawerVisible(false)
   }
 
   function addToPlanner () {

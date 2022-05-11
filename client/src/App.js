@@ -25,7 +25,12 @@ function App () {
   const [plannerVisible, setPlannerVisible] = useState(false)
   const [plannerList, setPlannerList] = useState([])
   const [resultPopup, setResultPopup] = useState({})
+  const [drawerVisible, setDrawerVisible] = useState(true)
 
+  function getDrawerVisible (drawStatus) {
+    setDrawerVisible(drawStatus)
+    console.log("in app", drawStatus)
+  }
   function getResultPopup (resultItem) {
     setResultPopup(resultItem)
   }
@@ -82,7 +87,6 @@ function App () {
       .then(response => response.data)
 
       .then(result => {
-        console.log(result)
         // Initialize with highest rate
         var object = []
         result.map(item => {
@@ -211,17 +215,12 @@ function App () {
     if (searchInput === undefined) {
       setSearchInput('')
     }
-
-    console.log(searchInput)
-    console.log(ZipCode)
     // Case : when user did not search anything, provide default data
     if (searchInput === '' && ZipCode === defaultZipCode) {
-      console.log("0000")
       dataInit()
     }
     // Case : when user did provide search values
     else {
-      console.log(1111)
       dataSearch()
     }
   }, [searchInput, searchFilter, radius, ZipCode])
@@ -246,9 +245,11 @@ function App () {
         showPlanner={plannerOpenClose}
         passPlannerList={plannerList}
         resultPopup={resultPopup}
+        getDrawerVisible={getDrawerVisible}
       />
       <Result passData={data}
         getResultPopup={getResultPopup}
+        drawerVisible={drawerVisible}
       />
       <ListFilter
         getRadius={getRadius}
