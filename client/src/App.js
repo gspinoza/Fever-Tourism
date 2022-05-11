@@ -24,7 +24,7 @@ function App () {
   const [lat, setLat] = useState(defaultLat)
   const [plannerVisible, setPlannerVisible] = useState(false)
   const [plannerList, setPlannerList] = useState([])
-  const [resultPopup, setResultPopup] = useState({})
+  const [resultPopup, setResultPopup] = useState(null)
   const [drawerVisible, setDrawerVisible] = useState(true)
 
   function getDrawerVisible (drawStatus) {
@@ -32,6 +32,7 @@ function App () {
     console.log("in app", drawStatus)
   }
   function getResultPopup (resultItem) {
+    console.log(resultItem)
     setResultPopup(resultItem)
   }
   function getSearchValue (searchValue) {
@@ -228,10 +229,12 @@ function App () {
         passPlannerList={plannerList}
         resultPopup={resultPopup}
         getDrawerVisible={getDrawerVisible}
+        drawerVisible={drawerVisible}
       />
       <Result passData={data}
         getResultPopup={getResultPopup}
         drawerVisible={drawerVisible}
+        getDrawerVisible={getDrawerVisible}
       />
       <ListFilter
         getRadius={getRadius}

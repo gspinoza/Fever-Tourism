@@ -20,7 +20,7 @@ const Marker = ({ onClick, place }) => {
 function Map (props) {
   const { passData, passLng, passLat, addPlanner,
     showPlanner, passPlannerList, resultPopup,
-    getDrawerVisible } = props
+    getDrawerVisible, drawerVisible } = props
   const mapContainer = useRef(null)
   const map = useRef(null)
   const [lng, setLng] = useState(-73.98888545) // defalt lng of New York
@@ -73,7 +73,7 @@ function Map (props) {
   };
 
   async function placedata (item) {
-
+    console.log(item)
     const result = await axios(`http://localhost:4000/axios/nyc/place/details/${item.id}`)
       .then(response => response.data)
       .catch(error => console.log('error', error))
@@ -160,8 +160,10 @@ function Map (props) {
   }, [passData, passLat, passLng])
 
   useEffect(() => {
-    placedata(resultPopup)
-  }, [resultPopup])
+    if (drawerVisible && resultPopup !== null) {
+      placedata(resultPopup)
+    }
+  }, [resultPopup, drawerVisible])
 
   return (
     <div className="Map">
