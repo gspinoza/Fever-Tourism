@@ -219,5 +219,22 @@ router.get('/nyccrime/location/:radius/:lon/:lat', (req, res) => {
     })
 })
 
+// get weather from given location
+router.get('/weather/:lon/:lat', (req, res) => {
+  var exclude = 'minutely,hourly'
+  // make external request
+  var requestOptions = { method: 'GET', redirect: 'follow' }
+  axios({
+    method: 'GET',
+    url: `https://api.openweathermap.org/data/2.5/onecall?lat=${req.params.lat}&lon=${req.params.lon}&exclude=${exclude}&units=imperial&appid=${weather_key}`})
+    .then(function (response) {
+      res.send(cleanWeatherData(response['data']))
+      res.end()
+    }) 
+    .catch(function (error) {
+      console.error(error);
+    })
+})
+
 module.exports = router
 
