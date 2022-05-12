@@ -228,7 +228,7 @@ router.get('/nyccrime/borough/:borough', (req, res) => {
   var requestOptions = { method: 'GET', redirect: 'follow' }
   axios({
     method: 'GET',
-    url: `https://data.cityofnewyork.us/resource/qb7u-rbmr.json?boro_nm=${req.params.borough}`,
+    url: `https://data.cityofnewyork.us/resource/5uac-w243.json?boro_nm=${req.params.borough}`,
     data: { limit: 5000, app_token: crime_data_token }
   })
     .then(function (response) {
@@ -245,7 +245,7 @@ router.get('/nyccrime/location/:radius/:lon/:lat', (req, res) => {
   // make external request
   axios({
     method: 'GET',
-    url: `https://data.cityofnewyork.us/resource/qb7u-rbmr.json?$where=within_circle(lat_lon, ${req.params.lat}, ${req.params.lon}, ${req.params.radius})`,
+    url: `https://data.cityofnewyork.us/resource/5uac-w243.json?$where=within_circle(lat_lon, ${req.params.lat}, ${req.params.lon}, ${req.params.radius})`,
     data: {
       limit: 5000, app_token: crime_data_token
     }
