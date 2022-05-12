@@ -16,11 +16,19 @@ const Marker = ({ onClick, place }) => {
   )
 }
 
+const CrimeMarker = ({ crime }) => {
+
+  return (
+    <div className="crimeMarker"></div>
+  )
+}
+
+
 
 function MapComponent (props) {
   const { passData, passLng, passLat, addPlanner,
     showPlanner, passPlannerList, resultPopup,
-    getDrawerVisible, drawerVisible } = props
+    getDrawerVisible, drawerVisible, passCrimeData } = props
   const mapContainer = useRef(null)
   const map = useRef(null)
   const [lng, setLng] = useState(-73.98888545) // defalt lng of New York
@@ -33,8 +41,6 @@ function MapComponent (props) {
   function showDrawer () {
     setDetailVisible(true)
     getDrawerVisible(true)
-    console.log(weatherinfo)
-    console.log(placeinfo)
   }
   function closeDetail () {
     setDetailVisible(false)
@@ -82,18 +88,13 @@ function MapComponent (props) {
       .catch(error => console.log('error', error))
 
     setWeatherInfo(weatherData.daily.slice(1, 8))
-    console.log(weatherData)
 
-    console.log(item)
     // Place detail
     const result = await axios(`http://localhost:4000/axios/nyc/place/details/${item.id}`)
       .then(response => response.data)
       .catch(error => console.log('error', error))
 
     setPlaceInfo(result)
-
-
-
 
     const popup = new mapboxgl.Popup({ closeOnClick: true, className: 'Map-popup' })
       .setLngLat([item.lon, item.lat])
@@ -130,6 +131,28 @@ function MapComponent (props) {
     new mapboxgl.Marker(ref.current)
       .setLngLat([item.lon, item.lat])
       .addTo(map.current)
+
+  }
+
+  // Add crime marker
+  function addCrimeMarker (crime) {
+
+    const ref = React.createRef()
+    // Create a new DOM node and save it to the React ref
+    ref.current = document.createElement('div')
+
+
+    // Render a Marker Component on our new DOM node
+    ReactDOM.render(
+      <CrimeMarker crime={crime} />,
+      ref.current
+    )
+
+    // Create a Mapbox Marker at our new DOM node
+    new mapboxgl.Marker(ref.current)
+      .setLngLat([crime.lon, crime.lat])
+      .addTo(map.current)
+
 
   }
 
@@ -171,12 +194,18 @@ function MapComponent (props) {
         setZoom(map.current.getZoom().toFixed(2))
       })
     }
+
+    for (let i = 0; i < passCrimeData.length; i++) {
+      addCrimeMarker(passCrimeData[i])
+    }
+
     if (passData.length !== 1 && passData[0] !== 'no result') {
       for (let i = 0; i < passData.length; i++) {
         addMarker(passData[i])
       }
     }
-  }, [passData, passLat, passLng])
+
+  }, [passData, passLat, passLng, passCrimeData])
 
   useEffect(() => {
     if (drawerVisible && resultPopup !== null) {

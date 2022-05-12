@@ -3,7 +3,6 @@ import './ListFilter.css'
 import { List, Checkbox, Radio, Space } from 'antd'
 
 
-
 const PlaceType = [
 
   'Museum',
@@ -17,23 +16,21 @@ const PlaceType = [
 ]
 
 const Crime = [
-  'Burglary',
-  'Felony Assault',
-  'Grand Larceny',
-  'Grand Larceny of Motor Vehicle',
-  'Murder',
-  'Robbery'
+  'Felony',
+  'Misdemeanor',
+  'Violation'
 ]
 
 
 function ListFilter (props) {
 
-  const { getRadius, currentFilter, getSearchFilter } = props
+  const { getRadius, currentFilter, getSearchFilter, getCrimeFilter, crimeFilter } = props
 
   const [radius, setRadius] = useState(1000)
 
-  const [checkList, setCheckList] = useState([])
+  const [checkList, setCheckList] = useState([])     // state to show check
 
+  const [crimeTypeList, setCrimeTypeList] = useState([])  // state to show check
   function filterType (e) {
 
     var temp = currentFilter
@@ -79,36 +76,48 @@ function ListFilter (props) {
     setCheckList(e.target.checked ? PlaceType : [])
     getSearchFilter(e.target.checked ? temp : [])
   }
-  function filterFeature (e, feature) {
-    console.log(feature)
-    console.log(e.target.checked)
 
-    /* 
-    if e.target.checked == true{
-      add to map
-    }
-    else{
-      remove from map
-    } 
-
-    */
+  function checkAllCrimeType (e) {
+    const temp = ['FELONY', 'MISDEMEANOR', 'VIOLATION']
+    setCrimeTypeList(e.target.checked ? Crime : [])
+    getCrimeFilter(e.target.checked ? temp : [])
   }
 
 
+  function filterCrimeType (e) {
 
-  function checkAllFeature (e) {
-    console.log(e.target.checked)
-
-    /* 
-    if e.target.checked == true{
-      add to map
+    var tempCrimeFilter = crimeFilter
+    var tag
+    var tempCrimeType = crimeTypeList
+    if (e.target.value === 'Felony') {
+      tag = 'FELONY'
+    } else if (e.target.value === 'Misdemeanor') {
+      tag = 'MISDEMEANOR'
+    } else if (e.target.value === 'Violation') {
+      tag = 'VIOLATION'
+    } else {
+      tag = e.target.value
     }
-    else{
-      remove from map
-    } 
 
-    */
+    if (e.target.checked) {
+      // add to filter
+      tempCrimeFilter.push(tag)
+      tempCrimeFilter = crimeFilter.filter(item => item != '')
+      // add to checkList
+      tempCrimeType.push(e.target.value)
+    }
+    else {
+      //remove from filter
+      tempCrimeFilter = crimeFilter.filter(item => item != tag)
+      //remove from checkList
+      tempCrimeType = crimeTypeList.filter(item => item != e.target.value)
+
+    }
+    setCrimeTypeList(tempCrimeType)
+    getCrimeFilter(tempCrimeFilter)
+
   }
+
   function searchRadius (e) {
     setRadius(e.target.value)
     getRadius(e.target.value)
@@ -126,13 +135,13 @@ function ListFilter (props) {
           <List.Item><Checkbox checked={checkList.includes(item) ? true : false} value={item} onChange={filterType}>{item}</Checkbox></List.Item>}
       /><br />
       Crime
-      <Checkbox className='list-all' onChange={checkAllFeature}>Check All</Checkbox><br />
+      <Checkbox className='list-all' onChange={checkAllCrimeType}>Check All</Checkbox><br />
       <List
         size="large"
         bordered
         dataSource={Crime}
         renderItem={item =>
-          <List.Item><Checkbox onChange={(e) => filterFeature(e, item)}>{item}</Checkbox></List.Item>}
+          <List.Item><Checkbox checked={crimeTypeList.includes(item) ? true : false} value={item} onChange={filterCrimeType}>{item}</Checkbox></List.Item>}
       /><br />
       Radius
       <div className='list-radiu'>

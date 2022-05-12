@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import './Planner.css'
 import { Drawer, Modal, Input, message, Empty } from 'antd'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { EditTwoTone, PlusCircleTwoTone, DeleteTwoTone } from '@ant-design/icons'
 import ReactToPrint from 'react-to-print'
 
@@ -43,7 +43,6 @@ function Planner (props) {
           if (noteReplace !== '') {
             for (let i = 0; i < object.notes.length; i++) {
               if (object.notes[i] === noteReplace) {
-                console.log('find')
                 object.notes[i] = note
                 success('Note changed')
               }
@@ -71,7 +70,6 @@ function Planner (props) {
         object.notes = object.notes.filter((result) => result !== n)
       }
     })
-    console.log(temp)
     addPlanner(temp)
     success('Note deleted')
 

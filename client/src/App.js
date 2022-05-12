@@ -1,4 +1,3 @@
-import './App.css'
 import React, { useState, useEffect } from "react"
 import Header from "./Components/Header/Header"
 import SearchBar from './Components/SearchBar/SearchBar'
@@ -27,12 +26,16 @@ function App () {
   const [resultPopup, setResultPopup] = useState(null)
   const [drawerVisible, setDrawerVisible] = useState(true)
   const [crimeData, setCrimeData] = useState([])
+  const [crimeFilter, setCrimeFilter] = useState([''])
 
+
+  function getCrimeFilter (crimeType) {
+    setCrimeFilter(crimeType)
+  }
   function getDrawerVisible (drawStatus) {
     setDrawerVisible(drawStatus)
   }
   function getResultPopup (resultItem) {
-    console.log(resultItem)
     setResultPopup(resultItem)
   }
   function getSearchValue (searchValue) {
@@ -53,7 +56,6 @@ function App () {
 
   function addToPlanner (placeinfo) {
     setPlannerList(placeinfo)
-    console.log(placeinfo)
   }
 
   function setLngLat (lng, lat) {
@@ -196,7 +198,10 @@ function App () {
       .then(response => response.data)
       .catch(error => console.log('error', error))
 
-    console.log(crimeResult)
+    const tempCrimeResult = crimeResult.filter(item => crimeFilter.includes(item.crime_type))
+
+    setCrimeData(tempCrimeResult)
+
   }
 
   useEffect(() => {
@@ -222,7 +227,7 @@ function App () {
 
     crimeSearch()
 
-  }, [searchInput, searchFilter, radius, ZipCode])
+  }, [searchInput, searchFilter, radius, ZipCode, crimeFilter])
 
 
   return (
@@ -243,6 +248,7 @@ function App () {
         resultPopup={resultPopup}
         getDrawerVisible={getDrawerVisible}
         drawerVisible={drawerVisible}
+        passCrimeData={crimeData}
       />
       <Result passData={data}
         getResultPopup={getResultPopup}
@@ -253,6 +259,8 @@ function App () {
         getRadius={getRadius}
         currentFilter={searchFilter}
         getSearchFilter={getSearchFilter}
+        crimeFilter={crimeFilter}
+        getCrimeFilter={getCrimeFilter}
       />
       {plannerVisible ?
         <Planner passPlannerList={plannerList} showPlanner={plannerOpenClose} addPlanner={addToPlanner} />

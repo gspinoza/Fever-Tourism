@@ -18,7 +18,6 @@ function SearchBar (props) {
     getSearchValue(searchValue)
   }
   function ZipCodeSearch () {
-    console.log(searchZipCode)
     getSearchZipCode(searchZipCode)
   }
 
