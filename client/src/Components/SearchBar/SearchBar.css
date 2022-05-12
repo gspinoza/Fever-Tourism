@@ -18,54 +18,45 @@
   margin-right: 10%;
 }
 
-/* CSS */
 .ViewPlanner {
-  background-color: transparent;
-  border: 1px solid #266db6;
-  box-sizing: border-box;
-  color: #00132c;
-  font-family: 'Avenir Next LT W01 Bold', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 20px;
-  padding: 15px 20px;
+  border: none;
+  display: block;
+  text-align: center;
+  cursor: pointer;
+  text-transform: uppercase;
+  outline: none;
+  overflow: hidden;
   position: relative;
-  text-decoration: none;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  background-color: rgb(18, 142, 173);
+  padding: 17px 60px;
   float: right;
   margin-right: 5%;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.ViewPlanner:hover,
-.ViewPlanner:active {
-  outline: 0;
-}
-
-.ViewPlanner:hover {
-  background-color: transparent;
-  cursor: pointer;
-}
-
-.ViewPlanner:before {
-  background-color: #d5edf6;
+.ViewPlanner:after {
   content: '';
-  height: calc(100% + 3px);
   position: absolute;
-  right: -7px;
-  top: -9px;
-  transition: background-color 300ms ease-in;
-  width: 100%;
-  z-index: -1;
+  left: 0;
+  top: 0;
+  height: 490%;
+  width: 140%;
+  background: #f5e90b48;
+  -webkit-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+  -webkit-transform: translateX(-98%) translateY(-25%) rotate(45deg);
+  transform: translateX(-98%) translateY(-25%) rotate(45deg);
 }
 
-.ViewPlanner:hover:before {
-  background-color: #bee5f5;
+.ViewPlanner:hover:after {
+  -webkit-transform: translateX(-9%) translateY(-25%) rotate(45deg);
+  transform: translateX(-9%) translateY(-25%) rotate(45deg);
 }
 
-@media (min-width: 768px) {
-  .button-51 {
-    padding: 16px 32px;
-  }
+.ViewPlanner span {
+  position: relative;
+  z-index: 1;
 }

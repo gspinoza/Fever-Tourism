@@ -50,7 +50,7 @@ function SearchBar (props) {
           onSearch={ZipCodeSearch}
         />
       </div>
-      <button className='ViewPlanner' onClick={openPlanner} role="button">View Planner</button>
+      <button className='ViewPlanner' onClick={openPlanner} role="button"><span>View Planner</span></button>
     </div>
   )
 }

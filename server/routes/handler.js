@@ -89,7 +89,7 @@ function cleanGeocodeData (data) {
 }
 
 // cleans up crime data
-function cleanCrimeData(data) {
+function cleanCrimeData (data) {
   var crimeData = JSON.parse(JSON.stringify(data))
   // data to return
   var crimesArray = []
@@ -114,13 +114,14 @@ function cleanCrimeData(data) {
 }
 
 // cleans up weather data
-function cleanWeatherData(data) {
+function cleanWeatherData (data) {
   var weatherData = JSON.parse(JSON.stringify(data))
 
   let newWeatherObject = {}
   newWeatherObject.temp = weatherData["current"]["temp"]
   newWeatherObject.weather = weatherData["current"]["weather"][0]["main"]
   newWeatherObject.desc = weatherData["current"]["weather"][0]["description"]
+  newWeatherObject.icon = weatherData["current"]["weather"][0]["icon"]
   newWeatherObject.lon = weatherData["lon"]
   newWeatherObject.lat = weatherData["lat"]
 
@@ -144,6 +145,7 @@ function cleanWeatherData(data) {
     day.morn = dayObject["temp"]["morn"]
     day.weather = dayObject["weather"][0]["main"]
     day.desc = dayObject["weather"][0]["description"]
+    day.icon = dayObject["weather"][0]["icon"]
     // push object into array
     dailyArray.push(day)
   }
@@ -153,10 +155,10 @@ function cleanWeatherData(data) {
 }
 
 //timestamp conversion
-function unixToRegularDate(timestamp) {
-  var d = new Date(timestamp*1000);
-  timeStampCon = d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
-  return timeStampCon;
+function unixToRegularDate (timestamp) {
+  var d = new Date(timestamp * 1000)
+  timeStampCon = (d.getMonth() + 1) + '/' + d.getDate() + '/' + d.getFullYear()
+  return timeStampCon
 };
 
 const cors = require('cors')
@@ -227,13 +229,14 @@ router.get('/nyccrime/borough/:borough', (req, res) => {
   axios({
     method: 'GET',
     url: `https://data.cityofnewyork.us/resource/qb7u-rbmr.json?boro_nm=${req.params.borough}`,
-    data: { limit : 5000, app_token : crime_data_token }})
+    data: { limit: 5000, app_token: crime_data_token }
+  })
     .then(function (response) {
       res.send(cleanCrimeData(response['data']))
       res.end()
-    }) 
+    })
     .catch(function (error) {
-      console.error(error);
+      console.error(error)
     })
 })
 
@@ -243,13 +246,15 @@ router.get('/nyccrime/location/:radius/:lon/:lat', (req, res) => {
   axios({
     method: 'GET',
     url: `https://data.cityofnewyork.us/resource/qb7u-rbmr.json?$where=within_circle(lat_lon, ${req.params.lat}, ${req.params.lon}, ${req.params.radius})`,
-    data: { limit : 5000, app_token : crime_data_token
-    }}) .then(function (response) {
-      res.send(cleanCrimeData(response['data']))
-      res.end()
-    }) .catch(function (error) {
-      console.error(error);
-    })
+    data: {
+      limit: 5000, app_token: crime_data_token
+    }
+  }).then(function (response) {
+    res.send(cleanCrimeData(response['data']))
+    res.end()
+  }).catch(function (error) {
+    console.error(error)
+  })
 })
 
 // get weather from given location
@@ -259,13 +264,14 @@ router.get('/weather/:lon/:lat', (req, res) => {
   var requestOptions = { method: 'GET', redirect: 'follow' }
   axios({
     method: 'GET',
-    url: `https://api.openweathermap.org/data/2.5/onecall?lat=${req.params.lat}&lon=${req.params.lon}&exclude=${exclude}&units=imperial&appid=${weather_key}`})
+    url: `https://api.openweathermap.org/data/2.5/onecall?lat=${req.params.lat}&lon=${req.params.lon}&exclude=${exclude}&units=imperial&appid=${weather_key}`
+  })
     .then(function (response) {
       res.send(cleanWeatherData(response['data']))
       res.end()
-    }) 
+    })
     .catch(function (error) {
-      console.error(error);
+      console.error(error)
     })
 })
 
