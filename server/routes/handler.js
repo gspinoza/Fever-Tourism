@@ -6,7 +6,7 @@ const axios = require("axios")
 // var api_key = '5ae2e3f221c38a28845f05b60136f3be8a3b4fe024bc8cc4a3956574'
 
 var api_key = '5ae2e3f221c38a28845f05b6f30a1b758501cadb129ddd11bd3f9499'
-var api_key_zip = 'b450db216156525dfaa2f39d77acaa27'
+var api_key_zip = 'e8e92698fdd1deda824647d3bf3070fd'
 var crime_data_token = 'bhpDzWIkU2Me9kazo21uTi1Bc'
 var weather_key = '2f8d6aa22c98b163c7a7fe2cd5def46d'
 
