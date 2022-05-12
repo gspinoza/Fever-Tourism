@@ -16,9 +16,13 @@ const PlaceType = [
   'Monument',
 ]
 
-const Feature = [
-  'Crime',
-  'Weather',
+const Crime = [
+  'Burglary',
+  'Felony Assault',
+  'Grand Larceny',
+  'Grand Larceny of Motor Vehicle',
+  'Murder',
+  'Robbery'
 ]
 
 
@@ -121,12 +125,12 @@ function ListFilter (props) {
         renderItem={item =>
           <List.Item><Checkbox checked={checkList.includes(item) ? true : false} value={item} onChange={filterType}>{item}</Checkbox></List.Item>}
       /><br />
-      Features
+      Crime
       <Checkbox className='list-all' onChange={checkAllFeature}>Check All</Checkbox><br />
       <List
         size="large"
         bordered
-        dataSource={Feature}
+        dataSource={Crime}
         renderItem={item =>
           <List.Item><Checkbox onChange={(e) => filterFeature(e, item)}>{item}</Checkbox></List.Item>}
       /><br />

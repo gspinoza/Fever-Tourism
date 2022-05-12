@@ -4,7 +4,7 @@ import Header from "./Components/Header/Header"
 import SearchBar from './Components/SearchBar/SearchBar'
 import ListFilter from "./Components/ListFilter/ListFilter"
 import Result from './Components/Result/Result'
-import Map from "./Components/Map/Map"
+import MapComponent from "./Components/Map/Map"
 import Planner from "./Components/Planner/Planner"
 import axios from "axios"
 import 'antd/dist/antd.css'
@@ -24,14 +24,15 @@ function App () {
   const [lat, setLat] = useState(defaultLat)
   const [plannerVisible, setPlannerVisible] = useState(false)
   const [plannerList, setPlannerList] = useState([])
-  const [resultPopup, setResultPopup] = useState({})
+  const [resultPopup, setResultPopup] = useState(null)
   const [drawerVisible, setDrawerVisible] = useState(true)
+  const [crimeData, setCrimeData] = useState([])
 
   function getDrawerVisible (drawStatus) {
     setDrawerVisible(drawStatus)
-    console.log("in app", drawStatus)
   }
   function getResultPopup (resultItem) {
+    console.log(resultItem)
     setResultPopup(resultItem)
   }
   function getSearchValue (searchValue) {
@@ -188,6 +189,15 @@ function App () {
 
   }
 
+  async function crimeSearch () {
+
+    // Get the lng and lat by given zipcode
+    const crimeResult = await axios(`http://localhost:4000/nyccrime/location/${radius}/${lng}/${lat}`)
+      .then(response => response.data)
+      .catch(error => console.log('error', error))
+
+    console.log(crimeResult)
+  }
 
   useEffect(() => {
 
@@ -200,6 +210,7 @@ function App () {
     if (searchInput === undefined) {
       setSearchInput('')
     }
+
     // Case : when user did not search anything, provide default data
     if (searchInput === '' && ZipCode === defaultZipCode) {
       dataInit()
@@ -208,6 +219,9 @@ function App () {
     else {
       dataSearch()
     }
+
+    crimeSearch()
+
   }, [searchInput, searchFilter, radius, ZipCode])
 
 
@@ -219,7 +233,7 @@ function App () {
         getSearchZipCode={getSearchZipCode}
         showPlanner={plannerOpenClose}
       />
-      <Map
+      <MapComponent
         passData={data}
         passLng={lng}
         passLat={lat}
@@ -228,10 +242,12 @@ function App () {
         passPlannerList={plannerList}
         resultPopup={resultPopup}
         getDrawerVisible={getDrawerVisible}
+        drawerVisible={drawerVisible}
       />
       <Result passData={data}
         getResultPopup={getResultPopup}
         drawerVisible={drawerVisible}
+        getDrawerVisible={getDrawerVisible}
       />
       <ListFilter
         getRadius={getRadius}

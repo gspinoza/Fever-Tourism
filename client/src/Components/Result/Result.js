@@ -8,26 +8,25 @@ import { PushpinTwoTone } from '@ant-design/icons'
 
 function Result (props) {
 
-  const { passData, getResultPopup, drawerVisible } = props
+  const { passData, getResultPopup, drawerVisible, getDrawerVisible } = props
   const [showPin, setShowPin] = useState({})
 
   // pass in the item/div clicked and make drawer popup
   function popMap (item) {
     getResultPopup(item)
     console.log("in result", drawerVisible)
+    getDrawerVisible(true)
     setShowPin(item)    // pin on current item
   }
 
   // rerender the page to remove pin when drawer is gone
   useEffect(() => {
     if (!drawerVisible) {
-      setShowPin()
+      setShowPin(null)
     }
 
     console.log("result list rerender")
   }, [drawerVisible])
-
-
 
 
 

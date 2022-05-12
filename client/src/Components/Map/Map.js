@@ -17,10 +17,10 @@ const Marker = ({ onClick, place }) => {
 }
 
 
-function Map (props) {
+function MapComponent (props) {
   const { passData, passLng, passLat, addPlanner,
     showPlanner, passPlannerList, resultPopup,
-    getDrawerVisible } = props
+    getDrawerVisible, drawerVisible } = props
   const mapContainer = useRef(null)
   const map = useRef(null)
   const [lng, setLng] = useState(-73.98888545) // defalt lng of New York
@@ -28,11 +28,13 @@ function Map (props) {
   const [zoom, setZoom] = useState(12)
   const [detailVisible, setDetailVisible] = useState(false)
   const [placeinfo, setPlaceInfo] = useState({})
-
+  const [weatherinfo, setWeatherInfo] = useState([])
 
   function showDrawer () {
     setDetailVisible(true)
     getDrawerVisible(true)
+    console.log(weatherinfo)
+    console.log(placeinfo)
   }
   function closeDetail () {
     setDetailVisible(false)
@@ -74,12 +76,23 @@ function Map (props) {
 
   async function placedata (item) {
 
+    // Weather
+    const weatherData = await fetch(`http://localhost:4000/weather/${item.lon}/${item.lat}`)
+      .then(response => response.json())
+      .catch(error => console.log('error', error))
+
+    setWeatherInfo(weatherData.daily.slice(1, 8))
+    console.log(weatherData)
+
+    console.log(item)
+    // Place detail
     const result = await axios(`http://localhost:4000/axios/nyc/place/details/${item.id}`)
       .then(response => response.data)
       .catch(error => console.log('error', error))
 
     setPlaceInfo(result)
-    console.log(result)
+
+
 
 
     const popup = new mapboxgl.Popup({ closeOnClick: true, className: 'Map-popup' })
@@ -87,12 +100,18 @@ function Map (props) {
       .setMaxWidth('500')
       .setHTML(
         `<h2>${result.name}</h2>
-        Address :
-        <div> ${result.address}</div>`
+        
+        <div> Address : ${result.address}</div>
+        <img src=' https://openweathermap.org/img/wn/${weatherData.icon}@2x.png'></img>
+        <div>${weatherData.desc}</div>
+        
+        <div>Current Tempreture : ${weatherData.temp} <span>&#8457;</span></div>`
+
       )
       .addTo(map.current)
 
-    showDrawer(result)
+
+    showDrawer()
   }
 
   // Add marker on map and popup place detail
@@ -160,8 +179,10 @@ function Map (props) {
   }, [passData, passLat, passLng])
 
   useEffect(() => {
-    placedata(resultPopup)
-  }, [resultPopup])
+    if (drawerVisible && resultPopup !== null) {
+      placedata(resultPopup)
+    }
+  }, [resultPopup, drawerVisible])
 
   return (
     <div className="Map">
@@ -179,17 +200,29 @@ function Map (props) {
           <Button type="primary" onClick={addToPlanner} ghost>
             Add to Planner
           </Button><br /><br />
+          <div>
+            {weatherinfo.map((item) =>
+              <div className='Map-weather'>
+                <div>{item.date.slice(0, - 5)}</div>
+                <img src={`https://openweathermap.org/img/wn/${item.icon}@2x.png`}></img>
+                <div className='Map-weather-max'>{item.max}<span>&#8457;</span></div>
+                <div className='Map-weather-min'>{item.min}<span>&#8457;</span></div>
+              </div>
+            )}
+          </div>
+          <br /><br /><br /><br />
           <h3 style={{ fontWeight: 'bold' }}>Address :</h3>
           <div>{placeinfo.address}</div><br />
           <h3 style={{ fontWeight: 'bold' }}>Description :</h3>
           <div>{placeinfo.wiki_info}</div><br />
           <img src={placeinfo.image}></img>
+
         </Drawer>
-      </div>
+      </div >
       <div className="sidebar">
         Longitude: {lng} | Latitude: {lat}
       </div>
-    </div>
+    </div >
   )
 }
-export default Map
+export default MapComponent
