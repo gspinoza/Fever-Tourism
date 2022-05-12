@@ -205,7 +205,7 @@ function MapComponent (props) {
       }
     }
 
-  }, [passData, passLat, passLng, passCrimeData])
+  }, [passData, passLat, passLng])
 
   useEffect(() => {
     if (drawerVisible && resultPopup !== null) {
