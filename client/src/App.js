@@ -67,6 +67,26 @@ function App () {
     setPlannerVisible(visible)
   }
 
+  function getHalfYearDate () {
+    const d = new Date()
+    var year = d.getFullYear()
+    var month = d.getMonth() + 1
+    var date = d.getDate()
+
+    if (month - 5 < 1) {
+      year--
+
+    }
+
+    month = (((month - 5) % 12) + 12) % 12
+
+    if (month === 0) {
+      month = 12
+    }
+
+    return `${year}-${month}-${date}`
+  }
+
   // Make categories uppercase
   function uppercase (item) {
     for (let i = 0; i < item.category.length; i++) {
@@ -109,7 +129,6 @@ function App () {
               else {
                 if (item.category.includes(searchFilter[i])) {
                   object.push(uppercase(item))
-                  console.log('find')
                   break
                 }
               }
@@ -169,7 +188,6 @@ function App () {
               else {
                 if (item.category.includes(searchFilter[i])) {
                   object.push(uppercase(item))
-                  console.log('find')
                   break
                 }
               }
@@ -194,7 +212,7 @@ function App () {
   async function crimeSearch () {
 
     // Get the lng and lat by given zipcode
-    const crimeResult = await axios(`http://localhost:4000/nyccrime/location/${radius}/${lng}/${lat}`)
+    const crimeResult = await axios(`http://localhost:4000/nyccrime/location/${radius}/${lng}/${lat}/${getHalfYearDate()}`)
       .then(response => response.data)
       .catch(error => console.log('error', error))
 
