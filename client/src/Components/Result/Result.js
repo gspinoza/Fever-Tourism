@@ -14,7 +14,6 @@ function Result (props) {
   // pass in the item/div clicked and make drawer popup
   function popMap (item) {
     getResultPopup(item)
-    console.log("in result", drawerVisible)
     getDrawerVisible(true)
     setShowPin(item)    // pin on current item
   }
@@ -25,7 +24,6 @@ function Result (props) {
       setShowPin(null)
     }
 
-    console.log("result list rerender")
   }, [drawerVisible])
 
 
