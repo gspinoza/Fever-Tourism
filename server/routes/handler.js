@@ -101,7 +101,7 @@ function cleanCrimeData (data) {
     // create a new object
     let newCrimeObject = {}
     // set new values
-    newCrimeObject.date = crimeObject["cmplnt_to_dt"]
+    newCrimeObject.date = crimeObject["cmplnt_fr_dt"]
     newCrimeObject.crime_type = crimeObject["law_cat_cd"]
     newCrimeObject.crime_desc = crimeObject["ofns_desc"]
     newCrimeObject.police_desc = crimeObject["pd_desc"]
