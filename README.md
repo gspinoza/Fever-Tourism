@@ -1,5 +1,5 @@
-# Web-Design-Project
-Link to website: https://jovial-raindrop-fa762f.netlify.app/
+# Web-Design-Project (Fever-Tourism)
+Demo: https://jovial-raindrop-fa762f.netlify.app/
 ## Development
 
 How to start:
@@ -17,3 +17,8 @@ If you only want to work on the backend:
 
 **Note:**
 The client is configured to run on port 3000 and the server runs on port 4000
+
+API:
+- OpenTripMap API : https://opentripmap.io/docs
+- NYC Crime Map Data API : https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i
+- Weather and GeolocationAPI : https://www.weatherapi.com/docs/
